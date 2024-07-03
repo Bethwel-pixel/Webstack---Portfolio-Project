@@ -11,15 +11,17 @@ const IndividualClientsForm = (props) => {
   const [data, setData] = useState([]);
   const [swalSms, setSwalSms] = useState([]);
   const [genderOptions, setGenderOptions] = useState([]);
-    const [error, setError] = useState([]);
-  const base_url = "individualclients";
+  const [error, setError] = useState([]);
+  const [refreshTable, setRefreshTable] = useState(false);
+  
+  const base_url = "individualclients"; 
 
   useEffect(() => {
     fetchGenderOptions();
-    fetchUsers();
-  }, [base_url]);
+    fetchIndividualClients();
+  }, [base_url, refreshTable]);
 
-  const fetchUsers = async () => {
+  const fetchIndividualClients = async () => {
     try {
       setLoading(true);
       const response = await getAllUsers(base_url);
@@ -85,15 +87,21 @@ const IndividualClientsForm = (props) => {
         if (Updated) {
           swal("Success!", `${Updated.data.message}`, "success");
         }
+        setRefreshTable((prev) => !prev); 
       } else {
         values.created_at = currentTimestamp;
         values.created_by = creator;
         const Created = await userManagementClient.post(`/${base_url}`, values);
         if (Created) {
-          swal("Success!", `${values.first_name} Created Successfully`, "success");
+          swal(
+            "Success!",
+            `${values.first_name} Created Successfully`,
+            "success"
+          );
+          setRefreshTable((prev) => !prev); 
         }
       }
-      await fetchUsers(); // Fetch the updated data immediately after submission
+      await fetchIndividualClients(); // Fetch the updated data immediately after submission
     } catch (error) {
       swal("Error!", `${error.response.data.error}`, "error");
     } finally {
@@ -112,9 +120,6 @@ const IndividualClientsForm = (props) => {
       isRequired: true,
     },
   ];
-
-  if (loading) return <CircularProgress />;
-  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <DynamicForm

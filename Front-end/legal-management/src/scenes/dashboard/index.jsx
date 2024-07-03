@@ -15,7 +15,10 @@ import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { getAllUsers } from "../../api/userservice";
 import BarChart from "../../components/BarChart";
+import LineChart from "../../components/LineChart";
 import { format } from "date-fns";
+import GeographyChart from "../../components/GeographyChart";
+import { Cases } from "@mui/icons-material";
 
 const Dashboard = () => {
   const base_url = "individualclients";
@@ -24,7 +27,7 @@ const Dashboard = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [indiv, setIndiv] = useState([]);
   const [cases, setCases] = useState([]);
-  const [recentCases, setrecentCases]=useState([]);
+  const [recentCases, setrecentCases] = useState([]);
   const [caseData, setCaseData] = useState([]);
   const [error, setError] = useState([]);
   const [refreshTable, setRefreshTable] = useState(false);
@@ -54,7 +57,6 @@ const Dashboard = () => {
     }
   };
 
-  
   const fetchRecentCases = async () => {
     try {
       const response = await getAllUsers("recentcases");
@@ -204,22 +206,22 @@ const Dashboard = () => {
             <Box>
               <Typography
                 variant="h5"
-                fontWeight="600"
+                fontWeight="500"
                 color={colors.grey[100]}
-                sx={{ fontSize: isSmallScreen ? "1rem" : "1.5rem" }}
+                sx={{ fontSize: isSmallScreen ? "0.2rem" : "1rem" }}
               >
                 Case Events
               </Typography>
-              <Typography
+              {/* <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
                 sx={{ fontSize: isSmallScreen ? "1.5rem" : "2.5rem" }}
               >
                 {cases}
-              </Typography>
+              </Typography> */}
               <Box>
-                <BarChart />
+                <BarChart isDashboard />
               </Box>
             </Box>
             {/* <Box>
@@ -307,7 +309,7 @@ const Dashboard = () => {
               color={colors.greenAccent[500]}
               sx={{ mt: "15px" }}
             >
-              324,156 Cases
+              {cases} Cases
             </Typography>
             <Typography>Includes extra cases </Typography>
           </Box>
@@ -324,7 +326,9 @@ const Dashboard = () => {
           >
             Cases Dashboard
           </Typography>
-          <Box height="250px" mt="-20px"></Box>
+          <Box height="250px" mt="-20px">
+            <LineChart isDashboard />
+          </Box>
         </Box>
         <Box
           gridColumn="span 4"
@@ -341,7 +345,7 @@ const Dashboard = () => {
           </Typography>
           <Box height="200px">
             {/* <LineChart /> */}
-            {/* <GeographyChart isDashboard={true} /> */}
+            <GeographyChart isDashboard />
           </Box>
         </Box>
       </Box>

@@ -67,7 +67,7 @@ def get_all_cases():
         return {"data": output}
 
 def get_all_recentCases():
-        sql=text('select * from casemanagementview order by created_at limit 10;')
+        sql=text('select * from casemanagementview order by updated_at limit 10;')
         allcases=db.session.execute(sql)
         output = []
         for u in allcases:

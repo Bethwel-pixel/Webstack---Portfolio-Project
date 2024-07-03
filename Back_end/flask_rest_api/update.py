@@ -40,20 +40,26 @@ def update_user(user_id):
 
 def update_caes(case_id):
     data = request.get_json()
-    Name = data.get('Name')
+    description = data.get('Description')
+    case_category_Id = data.get('Category')
+    case_subcategory_Id = data.get('Subcategory')
+    clientType = data.get('clientType')
+    updated_by = data.get('updated_by')
+    updated_at = data.get('updated_at')
+    IndividualclientId = data.get('clients_first_name')
 
     # Check if all required parameters are present
-    if not Name:
+    if not description:
         return jsonify({'error': 'Missing required parameters'}), 400
 
     # Construct SQL update statement with placeholders
-    UpdateCases = text("UPDATE cases SET Name=:Name WHERE Id=:case_id")
+    UpdateCases = text("UPDATE cases SET description=:description,case_category_Id=:case_category_Id,clientType=:clientType,updated_by=:updated_by, updated_at=:updated_at,IndividualclientId=:IndividualclientId WHERE Id=:case_id")
 
     try:
         # Execute the SQL statement with parameters
-        db.session.execute(UpdateCases, {'Name': Name, "case_id":case_id})
+        db.session.execute(UpdateCases, {'description':description,'case_category_Id':case_category_Id,'clientType':clientType,'updated_by':updated_by, 'updated_at':updated_at,'IndividualclientId':IndividualclientId, "case_id":case_id})
         db.session.commit()
-        return jsonify({'message': f'{Name}  Case updated successfully'}), 200
+        return jsonify({'message': f'{description}  Case updated successfully'}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500

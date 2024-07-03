@@ -4,6 +4,7 @@ import DynamicTable from "../../../data/DynamicTable/dynamicTable";
 import { clientManagementUrl } from "../../../config";
 import CorporateClientsForm from "./form";
 import { CorporateClientsColumns } from "../../../data/DynamicTable/Collumns";
+import IndividualClientsForm from "./form";
 
 const actions = {
   edit: {
@@ -36,7 +37,7 @@ function CorporateClients() {
         title="Corporate Clients"
         subtitle="View all Corporate Clients, create, edit, or view details"
         columns={CorporateClientsColumns}
-        FormComponent={CorporateClientsForm}
+        FormComponent={IndividualClientsForm}
         base_url={"corporateclients"}
         actions={actions}
       />

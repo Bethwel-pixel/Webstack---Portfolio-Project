@@ -55,10 +55,10 @@ const CasesForm = (props) => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-    fetchClientOptions();
-  }, [base_url, refreshTable]);
+  // useEffect(() => {
+  //   fetchUsers();
+  //   fetchClientOptions();
+  // }, [base_url, refreshTable]);
 
   const fetchSubcategoryOptions = async () => {
     // const categoryId = sessionStorage.getItem("categoryId");
@@ -108,7 +108,14 @@ const CasesForm = (props) => {
       if (props.isEditing) {
         values.updated_at = timestamp;
         values.updated_by = user;
-        await userManagementClient.put(`/${base_url}/${props.data.id}`, values);
+        const update = await userManagementClient.put(
+          `/${base_url}/${props.data.id}`,
+          values
+        );
+        if (update) {
+          props.onClose();
+          swal("Success!", `${update.data.message}`, "success");
+        }
       } else {
         values.created_at = timestamp;
         values.created_by = user;

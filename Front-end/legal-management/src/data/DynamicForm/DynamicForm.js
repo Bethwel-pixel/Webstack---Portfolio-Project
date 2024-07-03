@@ -1,11 +1,24 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { TextField, Button, CircularProgress, Box, MenuItem } from "@mui/material";
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Box,
+  MenuItem,
+} from "@mui/material";
 import swal from "sweetalert";
 
-const DynamicForm = ({ fields, onSubmit, onClose, isEditing, initialData = {} }) => {
+const DynamicForm = ({
+  fields,
+  onSubmit,
+  onClose,
+  isEditing,
+  initialData = {},
+}) => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState([]);
 
   const initialValues = fields.reduce((acc, field) => {
     acc[field.name] = initialData[field.name] || field.value || "";
@@ -27,7 +40,11 @@ const DynamicForm = ({ fields, onSubmit, onClose, isEditing, initialData = {} })
       try {
         await onSubmit(values);
       } catch (error) {
-        swal("Error!", "Unable to complete operation, try again later", "error");
+        swal(
+          "Error!",
+          "Unable to complete operation, try again later",
+          "error"
+        );
       } finally {
         setLoading(false);
         setSubmitting(false);
@@ -41,7 +58,7 @@ const DynamicForm = ({ fields, onSubmit, onClose, isEditing, initialData = {} })
   return (
     <Box component="form" onSubmit={formik.handleSubmit} noValidate>
       {fields.map((field) => (
-        <Box key={field.id} sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <Box key={field.id} sx={{ display: "flex", gap: 2, mb: 2 }}>
           {field.type === "select" ? (
             <TextField
               select
@@ -51,8 +68,12 @@ const DynamicForm = ({ fields, onSubmit, onClose, isEditing, initialData = {} })
               label={field.label}
               value={formik.values[field.name]}
               onChange={formik.handleChange}
-              error={formik.touched[field.name] && Boolean(formik.errors[field.name])}
-              helperText={formik.touched[field.name] && formik.errors[field.name]}
+              error={
+                formik.touched[field.name] && Boolean(formik.errors[field.name])
+              }
+              helperText={
+                formik.touched[field.name] && formik.errors[field.name]
+              }
             >
               {field.options.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -68,8 +89,12 @@ const DynamicForm = ({ fields, onSubmit, onClose, isEditing, initialData = {} })
               label={field.label}
               value={formik.values[field.name]}
               onChange={formik.handleChange}
-              error={formik.touched[field.name] && Boolean(formik.errors[field.name])}
-              helperText={formik.touched[field.name] && formik.errors[field.name]}
+              error={
+                formik.touched[field.name] && Boolean(formik.errors[field.name])
+              }
+              helperText={
+                formik.touched[field.name] && formik.errors[field.name]
+              }
             />
           )}
         </Box>
