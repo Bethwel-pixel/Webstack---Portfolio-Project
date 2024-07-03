@@ -1,4 +1,5 @@
 from UserManagment import db, jsonify, request
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
@@ -11,7 +12,7 @@ def update_user(user_id):
     Phone_number = data.get('phone')
     genderId = data.get('gender')
     updated_by = data.get('updated_by')
-    updated_at = data.get('updated_at')
+    updated_at = datetime.now()
 
 
     #  ***  Handling Username
@@ -42,10 +43,10 @@ def update_caes(case_id):
     data = request.get_json()
     description = data.get('Description')
     case_category_Id = data.get('Category')
-    case_subcategory_Id = data.get('Subcategory')
+    # case_subcategory_Id = data.get('Subcategory')
     clientType = data.get('clientType')
     updated_by = data.get('updated_by')
-    updated_at = data.get('updated_at')
+    updated_at = datetime.now()
     IndividualclientId = data.get('clients_first_name')
 
     # Check if all required parameters are present
@@ -73,7 +74,7 @@ def update_IndividualClient(case_id):
     Phone_number = data.get('phone')
     genderId = data.get('gender')
     updated_by = data.get('updated_by')
-    updated_at = data.get('updated_at')
+    updated_at = datetime.now()
 
     # Check if all required parameters are present
     if not First_name or not Last_name or not email or not Phone_number:
@@ -98,7 +99,7 @@ def update_CorporateClient(case_id):
     email = data.get('email')
     Phone_number = data.get('phone')
     updated_by = data.get('updated_by')
-    updated_at = data.get('updated_at')
+    updated_at = datetime.now()
 
     # Check if all required parameters are present
     if not First_name or not Last_name or not email or not Phone_number:

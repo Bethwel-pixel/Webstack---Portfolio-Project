@@ -1,10 +1,11 @@
 from UserManagment import request, jsonify, db, Users, SQLAlchemy
+from werkzeug.security import check_password_hash
 def SignIn():       
     data = request.get_json()
     Username = data.get('Username')
-    password = data.get('password')
+    Password = data.get('password')
 
-    if not Username or not password:
+    if not Username:
         return jsonify({"message": "Missing Username or password"}), 401
 
     user = Users.query.filter_by(Username=Username).first()
@@ -13,13 +14,13 @@ def SignIn():
         return jsonify({"message":"You are Inactive, Kindly contact Admin"}), 401
 
 
-    if user.Username != Username and user.password != password:
+    if user.Username != Username:
         if user.Username != Username:
             return jsonify({"message": "Invalid Username"}), 401
         else:
             return jsonify({"message": "Invalid Password"}), 401
     
-    if password != user.password:
+    if not check_password_hash(user.password, Password):
         return jsonify({"message": "Invalid Password"}), 401
 
     # if not user.password: #check_password_hash(user.password, password):

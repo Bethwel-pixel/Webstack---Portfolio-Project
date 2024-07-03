@@ -18,7 +18,8 @@ import IndividualClients from "./scenes/clientManagement/individualClients";
 import withLayout from "./components/HOCApp";
 import ChartOfAccounts from "./scenes/AccountsAndFinanceManagement/chartofaccounts";
 import BarChart from "./components/BarChart";
-import axios from 'axios';
+import axios from "axios";
+import SignUpSide from "./scenes/SignUp/signup";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -44,7 +45,6 @@ function App() {
         </Routes>
         {isAuthenticated && (
           <>
-            
             <Routes>
               <Route path="/users" element={withLayout(Users)()} />
               <Route path="/usersform" element={withLayout(UsersForm)()} />
@@ -54,17 +54,27 @@ function App() {
               <Route path="/case-details" element={withLayout(CaseDetails)()} />
             </Routes>
             <Routes>
-              <Route path="/corporate-clients" element={withLayout(CorporateClients)()} />
-              <Route path="/individual-clients" element={withLayout(IndividualClients)()} />
+              <Route
+                path="/corporate-clients"
+                element={withLayout(CorporateClients)()}
+              />
+              <Route
+                path="/individual-clients"
+                element={withLayout(IndividualClients)()}
+              />
             </Routes>
             <Routes>
               <Route path="/bar" element={withLayout(BarChart)()} />
-              <Route path="/super-admin-dashboard" element={withLayout(Dashboard)()} />
+              <Route
+                path="/super-admin-dashboard"
+                element={withLayout(Dashboard)()}
+              />
             </Routes>
           </>
         )}
         <Routes>
           <Route path="/signin" element={<SignInSide />} />
+          <Route path="/sign-up" element={<SignUpSide />} />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>

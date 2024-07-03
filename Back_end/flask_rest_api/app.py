@@ -13,6 +13,7 @@ from mutation import create_user, Create_Case, create_IndividualClient, create_C
 from update import update_user, update_caes, update_IndividualClient, update_CorporateClient
 from signin import SignIn
 from flask_login import LoginManager, login_required, current_user
+from Signup import SignUp
 from query import text
 
 app = Flask(__name__)
@@ -31,6 +32,11 @@ def hello():
 @app.route('/login', methods=['POST'])
 def login():
     return SignIn()
+
+
+@app.route('/signup', methods=['POST'])
+def Sign_Up():
+    return SignUp()
 
 @app.route('/user')
 @login_required

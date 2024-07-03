@@ -55,10 +55,10 @@ const CasesForm = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchUsers();
-  //   fetchClientOptions();
-  // }, [base_url, refreshTable]);
+  useEffect(() => {
+    fetchUsers();
+    fetchClientOptions();
+  }, [base_url, refreshTable]);
 
   const fetchSubcategoryOptions = async () => {
     // const categoryId = sessionStorage.getItem("categoryId");

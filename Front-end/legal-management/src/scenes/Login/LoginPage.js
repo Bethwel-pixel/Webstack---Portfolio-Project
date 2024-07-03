@@ -45,19 +45,23 @@ function SignInSide({ onLogin }) {
       const password = formData.get("password");
 
       // Save username and password in session storage
-      sessionStorage.setItem('username', Username);
+      sessionStorage.setItem("username", Username);
 
       const response = await loginCallApi(Username, password);
 
       if (response.status === 401) {
         swal("Error!", `${response.data.message}`, "error");
-      } else {
+      } else if (response.status === 500) {
+        swal("Error!", `${response.data.message}`, "error");
+      } else if (response.status === 200) {
         const Username = formData.get("Username");
-        sessionStorage.setItem('user', JSON.stringify(Username));
+        sessionStorage.setItem("user", JSON.stringify(Username));
         if (onLogin) {
           onLogin(Username); // Call the onLogin prop function if provided
         }
         navigate("/super-admin-dashboard");
+      } else {
+        swal("Error!", "You don't have an account, Sign Up", "error");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -184,7 +188,7 @@ function SignInSide({ onLogin }) {
                 >
                   {"Copyright © "}
                   <Link color="inherit" href="https://mui.com/">
-                    Sheria Pro
+                    Legal Management
                   </Link>{" "}
                   {new Date().getFullYear()}
                   {"."}
