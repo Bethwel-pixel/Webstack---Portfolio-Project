@@ -6,6 +6,7 @@ import {
   useTheme,
   Drawer,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
@@ -24,7 +25,12 @@ import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import { Groups2Outlined } from "@mui/icons-material";
+import {
+  CasesOutlined,
+  Groups2Outlined,
+  SettingsOutlined,
+  WcOutlined,
+} from "@mui/icons-material";
 import AnalyticsOutlinedIcon from "@mui/icons-material/AnalyticsOutlined";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
@@ -98,6 +104,19 @@ const menuItems = [
       },
     ],
   },
+  {
+    id: 1012,
+    title: "SetUp Management",
+    icon: "setupmanagement",
+    children: [
+      {
+        id: 2007,
+        title: "Gender",
+        icon: "gender",
+        to: "/gender-setups",
+      },
+    ],
+  },
 ];
 
 function getIconByName(iconName) {
@@ -122,6 +141,12 @@ function getIconByName(iconName) {
       return <PersonOutlinedIcon />;
     case "users":
       return <PeopleOutlinedIcon />;
+    case "Cases":
+      return <CasesOutlined />;
+    case "setupmanagement":
+      return <SettingsOutlined />;
+    case "gender":
+      return <WcOutlined />;
   }
 }
 
@@ -265,16 +290,25 @@ const Sidebar = () => {
           {/* MENU ITEMS */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {menuItems.map((menuitem, i) => (
-              <Item
+              <Tooltip
+                title={isCollapsed ? menuitem.title : ""}
+                placement="right"
                 key={i}
-                title={menuitem.title}
-                icon={menuitem.icon}
-                selected={selected}
-                setSelected={setSelected}
-                setMenuSelected={setMenuSelected}
-                selectedMenu={selectedMenu}
-                submenuitems={menuitem.children}
-              />
+              >
+                <div>
+                  <Item
+                    key={i}
+                    title={menuitem.title}
+                    icon={menuitem.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                    setMenuSelected={setMenuSelected}
+                    selectedMenu={selectedMenu}
+                    submenuitems={menuitem.children}
+                    isCollapsed={isCollapsed} // Pass isCollapsed prop to Item component
+                  />
+                </div>
+              </Tooltip>
             ))}
           </Box>
         </Menu>

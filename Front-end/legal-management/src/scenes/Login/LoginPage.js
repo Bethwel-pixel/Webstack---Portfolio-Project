@@ -61,7 +61,7 @@ function SignInSide({ onLogin }) {
         }
         navigate("/super-admin-dashboard");
       } else {
-        swal("Error!", "You don't have an account, Sign Up", "error");
+        swal("Error!", "Check Network Connectivity", "error");
       }
     } catch (error) {
       console.error("Error:", error);

@@ -1,4 +1,4 @@
-from UserManagment import Users, db, jsonify
+from UserManagment import Users, db, jsonify, request
 from companyRegionBranches import CompanyRegionBranchView
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -249,3 +249,10 @@ def get_all_clientType():
     return jsonify({
         "data": output,
     })
+
+def get_User_Id():
+      data=request.get_json()
+      username = data.get('username')
+      sql = text('SELECT User_id FROM Users WHERE Username = :username')
+      user = db.session.execute(sql, {'username': username}).fetchone()
+      return jsonify({'User_id': user[0]})

@@ -20,6 +20,7 @@ class Users(db.Model):
     created_by = db.Column(db.String(50), nullable=False)
     updated_by = db.Column(db.String(50), nullable=True)
     genderId= db.Column(db.Integer, nullable=True)
+    isPassword=db.Column(db.Boolean, nullable=False, default=0)
     
     def __repr__(self):
         return f'{self.First_name}'

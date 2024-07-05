@@ -1,7 +1,8 @@
-from UserManagment import db, jsonify, request
+from UserManagment import db, jsonify, request, Users
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from werkzeug.security import generate_password_hash
 
 def update_user(user_id):
     data = request.get_json()
@@ -113,6 +114,30 @@ def update_CorporateClient(case_id):
         db.session.execute(UpdateCases, {'First_name':First_name, 'Last_name':Last_name , 'email':email , 'Phone_number':Phone_number , 'updated_by':updated_by , 'updated_at':updated_at, "case_id":case_id})
         db.session.commit()
         return jsonify({'message': f'{First_name}  Case updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+    
+def update_isPassword():
+    data = request.get_json()
+    username = data.get('username')
+
+    try:
+        # Get the user by username
+        user = db.session.execute(text("SELECT * FROM users WHERE Username=:username"), {'username': username}).fetchone()
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Get the user ID
+        user_id = user.User_Id  # Assuming 'User_Id' is the column name
+
+        # Update the isPassword field for the user
+        db.session.execute(text("UPDATE users SET isPassword = 1 WHERE User_Id=:user_id"), {'user_id': user_id})
+        db.session.commit()
+
+        return jsonify({'data': user_id}), 200
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500

@@ -86,14 +86,14 @@ const UsersForm = (props) => {
         );
 
         if (Updated) {
-          swal("Success!",`${Updated.data.message}`, "success");
+          swal("Success!", `${Updated.data.message}`, "success");
         }
       } else {
         values.created_at = currentTimestamp;
         values.created_by = creator;
         const Created = await userManagementClient.post("/data", values);
         if (Created) {
-          swal("Success!",`${Created.data.message}`, "success");
+          swal("Success!", `${Created.data.message}`, "success");
         }
       }
       setRefreshTable((prev) => !prev); // Refresh the table after submission

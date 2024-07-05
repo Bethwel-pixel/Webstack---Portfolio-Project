@@ -16,12 +16,12 @@ def SignIn():
 
     if user.Username != Username:
         if user.Username != Username:
-            return jsonify({"message": "Invalid Username"}), 401
+            return jsonify({"message": "Invalid Credentials"}), 401
         else:
-            return jsonify({"message": "Invalid Password"}), 401
+            return jsonify({"message": "Invalid Credentials"}), 401
     
     if not check_password_hash(user.password, Password):
-        return jsonify({"message": "Invalid Password"}), 401
+        return jsonify({"message": "Invalid Credentials"}), 401
 
     # if not user.password: #check_password_hash(user.password, password):
     #     return jsonify({"message": "Invalid password"}), 401

@@ -20,6 +20,8 @@ import ChartOfAccounts from "./scenes/AccountsAndFinanceManagement/chartofaccoun
 import BarChart from "./components/BarChart";
 import axios from "axios";
 import SignUpSide from "./scenes/SignUp/signup";
+import Gender from "./scenes/Gender";
+import ForgotPassword from "./scenes/ForgotPassword/FormTwo";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -42,6 +44,7 @@ function App() {
             element={<SignInSide onLogin={() => setIsAuthenticated(true)} />}
           />
           <Route path="/changepassword" element={<ChangePasswordForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
         {isAuthenticated && (
           <>
@@ -62,6 +65,9 @@ function App() {
                 path="/individual-clients"
                 element={withLayout(IndividualClients)()}
               />
+            </Routes>
+            <Routes>
+              <Route path="/gender-setups" element={withLayout(Gender)()} />
             </Routes>
             <Routes>
               <Route path="/bar" element={withLayout(BarChart)()} />

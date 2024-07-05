@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash
 from clientManagement import IndividualClients, CorporateClients
+from SetUpManagement import Gender
 
 def create_user():
     data = request.get_json()
@@ -127,4 +128,50 @@ def create_CorporateClient():
         return jsonify({'message': f'{First_name} created successfully'}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500  
+        return jsonify({'error': str(e)}), 500 
+    
+def Create_Gender():
+    data = request.get_json()
+    id = data.get('Id')
+    gender = data.get('Gender')
+    created_by = data.get('created_by')
+    created_at = datetime.now()
+
+
+    if not gender:
+        return jsonify({'error': 'Missing required parameters'}), 400
+
+    user = Gender(id=id,gender=gender, created_by= created_by, created_at=created_at)
+    
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'message': f'{gender} created successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+    
+
+
+def change_password(id):
+    data = request.get_json()
+    Username= data.get('Username')
+    Password = data.get('Password')
+    Password = generate_password_hash(Password)
+    updated_at = datetime.now()
+    
+    Pass = db.session.execute(text("SELECT isPassword FROM users WHERE User_Id=:id"), {'id':id}).scalar()
+    # Check if all required parameters are present
+    if Pass != 1:
+        return jsonify({'message': f'Password already changed successfully, kindly go to the forgot password portal'}), 500
+
+    # Construct SQL update statement
+    else:
+        try:
+            # Execute the SQL statement with parameters
+            db.session.execute(text("UPDATE users SET password=:password, isPassword = 0, updated_at=:updated_at WHERE Username=:Username"), {'password':Password, 'updated_at':updated_at, 'Username':Username})
+            db.session.commit()
+            return jsonify({'data': "Password changed successfully"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 500

@@ -25,7 +25,6 @@ import { json, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Topbar = () => {
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -39,11 +38,12 @@ const Topbar = () => {
 
   useEffect(() => {
     let isMounted = true;
+    const userName = JSON.parse(sessionStorage.user);
 
     async function fetchAllData() {
       try {
         if (isMounted) {
-          const username = JSON.parse(sessionStorage.user)
+          const username = JSON.parse(sessionStorage.user);
           const notificationsResponse = await axios.get(
             `http://localhost:5000/notifications/${username}`
           ); // Update this with your actual notifications endpoint
@@ -67,7 +67,9 @@ const Topbar = () => {
     const fetchUserData = async () => {
       try {
         const userId = JSON.parse(sessionStorage.user);
-        const response = await axios.get(`http://localhost:5000/data/${userId}`);
+        const response = await axios.get(
+          `http://localhost:5000/data/${userId}`
+        );
         if (response.data) {
           setUser(response.data);
         }
@@ -173,6 +175,12 @@ const Topbar = () => {
                 <Divider sx={{ color: colors.redAccent[400] }} />
               </div>
             ))}
+            <Typography> you have No New notifications</Typography>
+            {/* <List>
+              <ListItem>
+                <ListItemText primary="No notifications" />
+              </ListItem>
+            </List> */}
           </List>
         </Box>
       </Popover>
@@ -228,7 +236,7 @@ const Topbar = () => {
               </Typography>
               <Typography sx={{ mt: 2 }}>
                 <strong>First Name:</strong> {user.First_name}
-              </Typography> 
+              </Typography>
               <Typography sx={{ mt: 2 }}>
                 <strong>Last Name:</strong> {user.Last_name}
               </Typography>

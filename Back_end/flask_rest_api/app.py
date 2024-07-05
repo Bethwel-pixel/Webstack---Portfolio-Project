@@ -9,8 +9,8 @@ from AccountManagement import Banks, BankAccounts, BankBranches
 from query import get_all_Users, get_all_Company_Region_View, get_all_cases, get_all_ClientManagementView, get_all_notifications, get_all_gender,get_all_IndividualClients, get_all_CorporateClients, get_all_category, get_all_casesubcategory, get_all_clientType, get_all_recentCases
 from delete import delete_user
 from companyRegionBranches import CompanyRegionBranchView
-from mutation import create_user, Create_Case, create_IndividualClient, create_CorporateClient
-from update import update_user, update_caes, update_IndividualClient, update_CorporateClient
+from mutation import create_user, Create_Case, create_IndividualClient, create_CorporateClient, Create_Gender, change_password
+from update import update_user, update_caes, update_IndividualClient, update_CorporateClient, update_isPassword
 from signin import SignIn
 from flask_login import LoginManager, login_required, current_user
 from Signup import SignUp
@@ -128,7 +128,7 @@ def update_IndividualClients(id):
 def all_corporateclients():
     return get_all_CorporateClients()
 
-@app.route('/corporateclients', methods=['POST'])
+@app.route('/corporateclients', methods=['PUT'])
 def create_corporateclients():
     return create_CorporateClient()
 
@@ -139,6 +139,10 @@ def update_corporateclients(id):
 @app.route('/gender')
 def all_gender():
     return get_all_gender()
+
+@app.route('/gender', methods=['POST'])
+def create_gender():
+    return Create_Gender()
 ## Method POST
 
 @app.route('/data', methods=['POST'])
@@ -170,6 +174,16 @@ def caseSubcategoryByCategory(id):
 def all_clientType():
     return get_all_clientType()
 
+
+
+# *** Forgot Password Logic ***
+@app.route('/forgot_password', methods=['POST'])
+def forgot_password():
+    return update_isPassword()
+
+@app.route('/change_password/<int:id>', methods=['POST'])
+def change_Password(id):
+    return change_password(id)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
