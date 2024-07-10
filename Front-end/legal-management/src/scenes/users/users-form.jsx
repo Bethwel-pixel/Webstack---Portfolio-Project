@@ -12,11 +12,15 @@ const UsersForm = (props) => {
   const [swalSms, setSwalSms] = useState([]);
 
   const [genderOptions, setGenderOptions] = useState([]);
+  const [countryOptions, setCountryOptions] = useState([]);
+  const [countyOptions, setCountyOptions] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [refreshTable, setRefreshTable] = useState(false);
   const [error, setError] = useState(null);
   const base_url = "data";
 
   useEffect(() => {
+    fetchCountries();
     fetchGenderOptions();
     fetchUsers();
   }, [base_url, refreshTable]);
@@ -42,13 +46,47 @@ const UsersForm = (props) => {
     }
   };
 
-  const OPtions = genderOptions
-    ? genderOptions.map((gender) => ({
-        parent_key: gender.id,
-        value: gender.id,
-        label: gender.gender,
-      }))
-    : [];
+  const fetchCountries = async () => {
+    try {
+      const response = await getAllUsers("countries");
+      setCountryOptions(response.data);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  const fetchCounties = async (countryId) => {
+    try {
+      const response = await getAllUsers(`counties/${26}`);
+      setCountyOptions(response.data);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  const handleCountryChange = (event) => {
+    const countryId = event.target.value;
+    setSelectedCountry(countryId);
+    fetchCounties(countryId);
+  };
+
+  const OPtions = genderOptions.map((gender) => ({
+    parent_key: gender.id,
+    value: gender.id,
+    label: gender.gender,
+  }));
+
+  const CountryOPtions = countryOptions.map((country) => ({
+    parent_key: country.id,
+    value: country.id,
+    label: country.Country,
+  }));
+
+  const CountyOptions = countyOptions.map((county) => ({
+    parent_key: county.id,
+    value: county.id,
+    label: county.County,
+  }));
 
   const initialValues = {
     Username: props.data ? props.data.Username : "",
@@ -59,27 +97,16 @@ const UsersForm = (props) => {
     genderId: props.data ? props.data.gender : "",
     created_by: props.data ? props.data.created_by : "",
     updated_by: props.data ? props.data.updated_by : "",
-  };
-
-  const getCurrentTimestamp = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    country: props.data ? props.data.country : "",
+    county: props.data ? props.data.county : "",
   };
 
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
       const creator = JSON.parse(sessionStorage.user);
-      const currentTimestamp = getCurrentTimestamp();
       if (props.isEditing) {
         values.updated_by = creator;
-        values.updated_at = currentTimestamp;
         const Updated = await userManagementClient.put(
           `/update/${props.data.id}`,
           values
@@ -89,7 +116,6 @@ const UsersForm = (props) => {
           swal("Success!", `${Updated.data.message}`, "success");
         }
       } else {
-        values.created_at = currentTimestamp;
         values.created_by = creator;
         const Created = await userManagementClient.post("/data", values);
         if (Created) {
@@ -113,6 +139,24 @@ const UsersForm = (props) => {
       type: "select",
       options: OPtions,
       isRequired: true,
+    },
+    {
+      id: "country",
+      name: "country",
+      label: "Country",
+      type: "select",
+      options: CountryOPtions,
+      isRequired: true,
+      onChange: handleCountryChange(),
+    },
+    {
+      id: "county",
+      name: "county",
+      label: "County",
+      type: "select",
+      options: CountyOptions,
+      isRequired: true,
+      disabled: !selectedCountry,
     },
   ];
 

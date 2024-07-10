@@ -256,3 +256,41 @@ def get_User_Id():
       sql = text('SELECT User_id FROM Users WHERE Username = :username')
       user = db.session.execute(sql, {'username': username}).fetchone()
       return jsonify({'User_id': user[0]})
+
+def get_all_countries():
+    # Query to get all notifications
+    sql = text('SELECT * from country;')
+    all_notifications = db.session.execute(sql).fetchall()
+
+
+    # Prepare the output
+    output = []
+    for u in all_notifications:
+        notification_data = {
+            'id': u[0],  # Assuming the first column is 'id'
+            'Country': u[1]  # Assuming the second column is 'description'
+        }
+        output.append(notification_data)
+
+    return jsonify({
+        "data": output,
+    })
+
+def get_all_counties(id):
+    # Query to get all notifications
+    sql = text('SELECT * from county where CountryId=:id;')
+    all_notifications = db.session.execute(sql,{"id":id}).fetchall()
+
+
+    # Prepare the output
+    output = []
+    for u in all_notifications:
+        notification_data = {
+            'id': u[0],  # Assuming the first column is 'id'
+            'Country': u[1]  # Assuming the second column is 'description'
+        }
+        output.append(notification_data)
+
+    return jsonify({
+        "data": output,
+    })

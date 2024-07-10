@@ -57,48 +57,58 @@ const DynamicForm = ({
 
   return (
     <Box component="form" onSubmit={formik.handleSubmit} noValidate>
-      {fields.map((field) => (
-        <Box key={field.id} sx={{ display: "flex", gap: 2, mb: 2 }}>
-          {field.type === "select" ? (
-            <TextField
-              select
-              fullWidth
-              id={field.name}
-              name={field.name}
-              label={field.label}
-              value={formik.values[field.name]}
-              onChange={formik.handleChange}
-              error={
-                formik.touched[field.name] && Boolean(formik.errors[field.name])
-              }
-              helperText={
-                formik.touched[field.name] && formik.errors[field.name]
-              }
-            >
-              {field.options.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          ) : (
-            <TextField
-              fullWidth
-              id={field.name}
-              name={field.name}
-              label={field.label}
-              value={formik.values[field.name]}
-              onChange={formik.handleChange}
-              error={
-                formik.touched[field.name] && Boolean(formik.errors[field.name])
-              }
-              helperText={
-                formik.touched[field.name] && formik.errors[field.name]
-              }
-            />
-          )}
-        </Box>
-      ))}
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        {fields.map((field, index) => (
+          <Box
+            key={field.id}
+            sx={{
+              flex: "1 1 calc(50% - 16px)", // Adjusting for the gap between fields
+              mb: 2,
+            }}
+          >
+            {field.type === "select" ? (
+              <TextField
+                select
+                fullWidth
+                id={field.name}
+                name={field.name}
+                label={field.label}
+                value={formik.values[field.name]}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[field.name] &&
+                  Boolean(formik.errors[field.name])
+                }
+                helperText={
+                  formik.touched[field.name] && formik.errors[field.name]
+                }
+              >
+                {field.options.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            ) : (
+              <TextField
+                fullWidth
+                id={field.name}
+                name={field.name}
+                label={field.label}
+                value={formik.values[field.name]}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched[field.name] &&
+                  Boolean(formik.errors[field.name])
+                }
+                helperText={
+                  formik.touched[field.name] && formik.errors[field.name]
+                }
+              />
+            )}
+          </Box>
+        ))}
+      </Box>
       <Box sx={{ display: "flex", justifyContent: "end", mt: 2 }}>
         <Button
           color="primary"

@@ -27,6 +27,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import {
   CasesOutlined,
+  GavelRounded,
   Groups2Outlined,
   SettingsOutlined,
   WcOutlined,
@@ -115,6 +116,12 @@ const menuItems = [
         icon: "gender",
         to: "/gender-setups",
       },
+      {
+        id: 2008,
+        title: "Country",
+        icon: "country",
+        to: "/country-setups",
+      },
     ],
   },
 ];
@@ -147,6 +154,8 @@ function getIconByName(iconName) {
       return <SettingsOutlined />;
     case "gender":
       return <WcOutlined />;
+    case "country":
+      return <MapOutlinedIcon />;
   }
 }
 

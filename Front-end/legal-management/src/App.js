@@ -22,6 +22,8 @@ import axios from "axios";
 import SignUpSide from "./scenes/SignUp/signup";
 import Gender from "./scenes/Gender";
 import ForgotPassword from "./scenes/ForgotPassword/FormTwo";
+import Country from "./scenes/SetUpManagment/Country";
+import LandingPage from "./scenes/Landing_Page";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -39,8 +41,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route
-            path="/"
+            path="/login"
             element={<SignInSide onLogin={() => setIsAuthenticated(true)} />}
           />
           <Route path="/changepassword" element={<ChangePasswordForm />} />
@@ -68,6 +71,7 @@ function App() {
             </Routes>
             <Routes>
               <Route path="/gender-setups" element={withLayout(Gender)()} />
+              <Route path="/country-setups" element={withLayout(Country)()} />
             </Routes>
             <Routes>
               <Route path="/bar" element={withLayout(BarChart)()} />

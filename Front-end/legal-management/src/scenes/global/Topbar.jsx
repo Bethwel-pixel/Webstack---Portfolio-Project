@@ -175,7 +175,7 @@ const Topbar = () => {
                 <Divider sx={{ color: colors.redAccent[400] }} />
               </div>
             ))}
-            <Typography> you have No New notifications</Typography>
+            {/* :<Typography> you have No New notifications</Typography> */}
             {/* <List>
               <ListItem>
                 <ListItemText primary="No notifications" />
