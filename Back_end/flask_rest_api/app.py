@@ -6,7 +6,7 @@ from clientManagement import Client
 from CasseManagement import Cases, CaseCategory, SubCategory
 from CompanyManagment import Company, IndustrySector
 from AccountManagement import Banks, BankAccounts, BankBranches
-from query import get_all_Users, get_all_Company_Region_View, get_all_cases, get_all_ClientManagementView, get_all_notifications, get_all_gender,get_all_IndividualClients, get_all_CorporateClients, get_all_category, get_all_casesubcategory, get_all_clientType, get_all_recentCases, get_all_counties, get_all_countries
+from query import get_all_Users, get_all_Company_Region_View, get_all_cases, get_all_ClientManagementView, get_all_notifications, get_all_gender,get_all_IndividualClients, get_all_CorporateClients, get_all_category, get_all_casesubcategory, get_all_clientType, get_all_recentCases, get_all_counties, get_all_countries, get_all_Modules
 from delete import delete_user
 from companyRegionBranches import CompanyRegionBranchView
 from mutation import create_user, Create_Case, create_IndividualClient, create_CorporateClient, Create_Gender, change_password
@@ -178,7 +178,9 @@ def all_clientType():
 def all_countries():
     return get_all_countries()
 
-
+@app.route('/SideBar/<int:roleId>', methods = ['GET'])
+def all_Modules_SideBar(roleId):
+    return get_all_Modules(roleId)
 
 # *** Forgot Password Logic ***
 @app.route('/forgot_password', methods=['POST'])

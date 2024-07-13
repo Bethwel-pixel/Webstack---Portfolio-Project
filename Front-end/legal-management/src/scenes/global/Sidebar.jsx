@@ -46,85 +46,9 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import TerrainIcon from "@mui/icons-material/Terrain";
 import MessageIcon from "@mui/icons-material/Message";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import { getAllUsers } from "../../api/userservice";
 
-const menuItems = [
-  {
-    id: 1007,
-    title: "Dashboard",
-    icon: "dashboard",
-    children: [
-      {
-        id: 2005,
-        title: "SuperAdmin Dashboard",
-        icon: "dashboard",
-        to: "/super-admin-dashboard",
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: "Case Management",
-    icon: "casemanagement",
-    children: [{ id: 2006, title: "Cases", icon: "Cases", to: "/Cases" }],
-  },
-  {
-    id: 3,
-    title: "Client Management",
-    icon: "clientmanagement",
-    children: [
-      {
-        id: 2,
-        title: "Corporate Clients",
-        icon: "clients",
-        to: "/corporate-clients",
-      },
-      {
-        id: 1,
-        title: "Individual Clients",
-        icon: "Individualclients",
-        to: "/individual-clients",
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "User Management",
-    icon: "usermanagement",
-    children: [{ id: 1, title: "Users", icon: "users", to: "/users" }],
-  },
-  {
-    id: 1012,
-    title: "Accounts and Finance Management",
-    icon: "accountsandfinancemanagement",
-    children: [
-      {
-        id: 2007,
-        title: "Account Setups",
-        icon: "Accounts",
-        to: "/accounts-setups",
-      },
-    ],
-  },
-  {
-    id: 1012,
-    title: "SetUp Management",
-    icon: "setupmanagement",
-    children: [
-      {
-        id: 2007,
-        title: "Gender",
-        icon: "gender",
-        to: "/gender-setups",
-      },
-      {
-        id: 2008,
-        title: "Country",
-        icon: "country",
-        to: "/country-setups",
-      },
-    ],
-  },
-];
+const base_url = "SideBar";
 
 function getIconByName(iconName) {
   switch (iconName) {
@@ -156,6 +80,8 @@ function getIconByName(iconName) {
       return <WcOutlined />;
     case "country":
       return <MapOutlinedIcon />;
+    default:
+      return null;
   }
 }
 
@@ -168,9 +94,11 @@ const Item = ({
   setMenuSelected,
   selectedMenu,
   submenuitems,
+  isCollapsed,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <SubMenu
       active={selectedMenu === title}
@@ -179,20 +107,19 @@ const Item = ({
       title={title}
       to={to}
     >
-      {submenuitems.map((submenuitem, j) => (
-        <MenuItem
-          key={j}
-          active={selected === submenuitem.title}
-          style={{ color: colors.grey[100] }}
-          onClick={() => setSelected(submenuitem.title)}
-          icon={getIconByName(submenuitem.icon)}
-        >
-          <Typography>
-            {submenuitem.title}
+      {submenuitems &&
+        submenuitems.map((submenuitem, j) => (
+          <MenuItem
+            key={j}
+            active={selected === submenuitem.title}
+            style={{ color: colors.grey[100] }}
+            onClick={() => setSelected(submenuitem.title)}
+            icon={getIconByName(submenuitem.icon)}
+          >
+            <Typography>{submenuitem.title}</Typography>
             <Link to={submenuitem.to} />
-          </Typography>
-        </MenuItem>
-      ))}
+          </MenuItem>
+        ))}
     </SubMenu>
   );
 };
@@ -206,6 +133,52 @@ const Sidebar = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isButtonVisible, setButtonVisible] = useState(true);
+  const [userRole, setUserRole] = useState("admin");
+  const [menuItems, setMenuItems] = useState([]); // Example role, replace with actual logic
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const response = await getAllUsers(`${base_url}/1`);
+        const fetchedData = response.data;
+
+        const modules = fetchedData.reduce((acc, item) => {
+          const existingModule = acc.find(
+            (mod) => mod.ModuleId === item.ModuleId
+          );
+
+          if (existingModule) {
+            existingModule.children.push({
+              title: item.SubModuleTitle,
+              icon: item.SubModuleIcon,
+              to: item.SubModuleLink,
+            });
+          } else {
+            acc.push({
+              title: item.ModuleTitle,
+              icon: item.ModuleIcon,
+              children: [
+                {
+                  title: item.SubModuleTitle,
+                  icon: item.SubModuleIcon,
+                  to: item.SubModuleLink,
+                },
+              ],
+              roles: [item.RoleName.toLowerCase()],
+            });
+          }
+
+          return acc;
+        }, []);
+
+        setMenuItems(modules);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      }
+    };
+
+    fetchModules();
+  }, []);
 
   const sidebarContent = (
     <Box
@@ -298,32 +271,35 @@ const Sidebar = () => {
 
           {/* MENU ITEMS */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            {menuItems.map((menuitem, i) => (
-              <Tooltip
-                title={isCollapsed ? menuitem.title : ""}
-                placement="right"
-                key={i}
-              >
-                <div>
-                  <Item
-                    key={i}
-                    title={menuitem.title}
-                    icon={menuitem.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                    setMenuSelected={setMenuSelected}
-                    selectedMenu={selectedMenu}
-                    submenuitems={menuitem.children}
-                    isCollapsed={isCollapsed} // Pass isCollapsed prop to Item component
-                  />
-                </div>
-              </Tooltip>
-            ))}
+            {menuItems
+              .filter((menuitem) => menuitem.roles.includes(userRole))
+              .map((menuitem, i) => (
+                <Tooltip
+                  title={isCollapsed ? menuitem.title : ""}
+                  placement="right"
+                  key={i}
+                >
+                  <div>
+                    <Item
+                      key={i}
+                      title={menuitem.title}
+                      icon={menuitem.icon}
+                      selected={selected}
+                      setSelected={setSelected}
+                      setMenuSelected={setMenuSelected}
+                      selectedMenu={selectedMenu}
+                      submenuitems={menuitem.children}
+                      isCollapsed={isCollapsed} // Pass isCollapsed prop to Item component
+                    />
+                  </div>
+                </Tooltip>
+              ))}
           </Box>
         </Menu>
       </ProSidebar>
     </Box>
   );
+
   return (
     <Box>
       {isSmallScreen ? (

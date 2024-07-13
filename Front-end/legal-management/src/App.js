@@ -1,6 +1,5 @@
-// src/App.js
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import SignInSide from "./scenes/Login/LoginPage";
@@ -28,13 +27,20 @@ import LandingPage from "./scenes/Landing_Page";
 function App() {
   const [theme, colorMode] = useMode();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null); // State to manage user role
 
   useEffect(() => {
+    // Simulate authentication and set user role
     const timer = setTimeout(() => {
       setIsAuthenticated(true);
+      setUserRole("admin"); // Set this based on actual user data
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const checkAccess = (allowedRoles) => {
+    return allowedRoles.includes(userRole);
+  };
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -48,18 +54,24 @@ function App() {
           />
           <Route path="/changepassword" element={<ChangePasswordForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Routes>
-        {isAuthenticated && (
-          <>
-            <Routes>
+          <Route path="/signin" element={<SignInSide />} />
+          <Route path="/sign-up" element={<SignUpSide />} />
+
+          {isAuthenticated && checkAccess(["admin", "user"]) && (
+            <>
               <Route path="/users" element={withLayout(Users)()} />
               <Route path="/usersform" element={withLayout(UsersForm)()} />
-            </Routes>
-            <Routes>
+              <Route
+                path="/super-admin-dashboard"
+                element={withLayout(Dashboard)()}
+              />
+            </>
+          )}
+
+          {isAuthenticated && checkAccess(["admin"]) && (
+            <>
               <Route path="/Cases" element={withLayout(Cases)()} />
               <Route path="/case-details" element={withLayout(CaseDetails)()} />
-            </Routes>
-            <Routes>
               <Route
                 path="/corporate-clients"
                 element={withLayout(CorporateClients)()}
@@ -68,23 +80,21 @@ function App() {
                 path="/individual-clients"
                 element={withLayout(IndividualClients)()}
               />
-            </Routes>
-            <Routes>
               <Route path="/gender-setups" element={withLayout(Gender)()} />
               <Route path="/country-setups" element={withLayout(Country)()} />
-            </Routes>
-            <Routes>
               <Route path="/bar" element={withLayout(BarChart)()} />
+            </>
+          )}
+          {isAuthenticated && checkAccess([""]) && (
+            <>
               <Route
                 path="/super-admin-dashboard"
                 element={withLayout(Dashboard)()}
               />
-            </Routes>
-          </>
-        )}
-        <Routes>
-          <Route path="/signin" element={<SignInSide />} />
-          <Route path="/sign-up" element={<SignUpSide />} />
+            </>
+          )}
+
+          <Route path="*" element={<Navigate to="/super-admin-dashboard" />} />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>

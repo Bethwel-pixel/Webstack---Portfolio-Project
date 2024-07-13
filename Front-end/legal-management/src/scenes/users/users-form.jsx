@@ -147,7 +147,7 @@ const UsersForm = (props) => {
       type: "select",
       options: CountryOPtions,
       isRequired: true,
-      onChange: handleCountryChange(),
+      onChange: handleCountryChange,
     },
     {
       id: "county",

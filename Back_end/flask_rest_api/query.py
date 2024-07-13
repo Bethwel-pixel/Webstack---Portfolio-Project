@@ -294,3 +294,34 @@ def get_all_counties(id):
     return jsonify({
         "data": output,
     })
+
+
+def get_all_Modules(roleId):
+    # Query to get all notifications
+    sql = text('SELECT * FROM beth.rolesmodulessubmodules where roleId=:roleId;')
+    all_notifications = db.session.execute(sql,{"roleId":roleId}).fetchall()
+
+    # Query to get the count of notifications
+#     sql_count = text('SELECT COUNT(*) FROM notifications;')
+#     count_result = db.session.execute(sql_count).fetchone()
+#     count = count_result[0]  # Accessing the count using integer index
+
+    # Prepare the output
+    output = []
+    for u in all_notifications:
+        notification_data = {
+            'id': u.RoleId,  # Assuming the first column is 'id'
+            'RoleName': u.RoleName,
+            'ModuleId': u.ModuleId,
+            'ModuleTitle':u.ModuleTitle,
+            'ModuleIcon':u.ModuleIcon,
+            'SubModuleId':u.SubModuleId,
+            'SubModuleTitle':u.SubModuleTitle,
+            'SubModuleIcon':u.SubModuleIcon,
+            'SubModuleLink':u.SubModuleLink,
+        }
+        output.append(notification_data)
+
+    return jsonify({
+        "data":output,
+    })        
