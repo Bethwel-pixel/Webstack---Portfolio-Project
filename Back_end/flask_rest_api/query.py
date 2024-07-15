@@ -2,6 +2,7 @@ from UserManagment import Users, db, jsonify, request
 from companyRegionBranches import CompanyRegionBranchView
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from collections import defaultdict
 
 def get_all_Users():
         userAll=text('select * from users')
@@ -250,12 +251,17 @@ def get_all_clientType():
         "data": output,
     })
 
-def get_User_Id():
-      data=request.get_json()
-      username = data.get('username')
-      sql = text('SELECT User_id FROM Users WHERE Username = :username')
-      user = db.session.execute(sql, {'username': username}).fetchone()
-      return jsonify({'User_id': user[0]})
+def get_User_Id(username):
+    sql = text('SELECT User_id, RoleId FROM Users WHERE Username = :username')
+    user = db.session.execute(sql, {'username': username})
+    output = []
+    for u in user:
+        userData = {
+            'userId':u[0],
+            'roleId':u[1]
+        }
+        output.append(userData)
+    return jsonify({"data":output,})
 
 def get_all_countries():
     # Query to get all notifications
@@ -296,32 +302,37 @@ def get_all_counties(id):
     })
 
 
-def get_all_Modules(roleId):
-    # Query to get all notifications
-    sql = text('SELECT * FROM beth.rolesmodulessubmodules where roleId=:roleId;')
-    all_notifications = db.session.execute(sql,{"roleId":roleId}).fetchall()
-
-    # Query to get the count of notifications
-#     sql_count = text('SELECT COUNT(*) FROM notifications;')
-#     count_result = db.session.execute(sql_count).fetchone()
-#     count = count_result[0]  # Accessing the count using integer index
+def get_all_Modules(username):
+    # Query to get all modules and submodules
+    sql = text('SELECT * FROM beth.rolesmodulessubmodules WHERE roleId=(SELECT RoleId FROM beth.users WHERE Username=:username);')
+    all_modules = db.session.execute(sql, {"username": username}).fetchall()
 
     # Prepare the output
-    output = []
-    for u in all_notifications:
-        notification_data = {
-            'id': u.RoleId,  # Assuming the first column is 'id'
-            'RoleName': u.RoleName,
-            'ModuleId': u.ModuleId,
-            'ModuleTitle':u.ModuleTitle,
-            'ModuleIcon':u.ModuleIcon,
-            'SubModuleId':u.SubModuleId,
-            'SubModuleTitle':u.SubModuleTitle,
-            'SubModuleIcon':u.SubModuleIcon,
-            'SubModuleLink':u.SubModuleLink,
+    modules_dict = defaultdict(lambda: {'children': []})
+
+    for row in all_modules:
+        module_id = row.ModuleId
+        module_data = {
+            'title': row.ModuleTitle,
+            'icon': row.ModuleIcon,
+            'ModuleId': row.ModuleId,
+            'roleName':row.RoleName
         }
-        output.append(notification_data)
+        submodule_data = {
+            'id':row.SubModuleId,
+            'title': row.SubModuleTitle,
+            'icon': row.SubModuleIcon,
+            'to': row.SubModuleLink,
+        }
+
+        if module_id not in modules_dict:
+            modules_dict[module_id].update(module_data)
+
+        modules_dict[module_id]['children'].append(submodule_data)
+
+    # Convert dict to list
+    output = list(modules_dict.values())
 
     return jsonify({
-        "data":output,
-    })        
+        "data": output,
+    })       

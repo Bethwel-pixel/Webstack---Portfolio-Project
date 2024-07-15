@@ -74,7 +74,7 @@ const IndividualClientsForm = (props) => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const creator = JSON.parse(sessionStorage.user);
+      const creator = sessionStorage.username;
       const currentTimestamp = getCurrentTimestamp();
       if (props.isEditing) {
         values.updated_by = creator;

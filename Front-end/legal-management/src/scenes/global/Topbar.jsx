@@ -38,12 +38,12 @@ const Topbar = () => {
 
   useEffect(() => {
     let isMounted = true;
-    const userName = JSON.parse(sessionStorage.user);
+    const userName = sessionStorage.username;
 
     async function fetchAllData() {
       try {
         if (isMounted) {
-          const username = JSON.parse(sessionStorage.user);
+          const username = sessionStorage.username;
           const notificationsResponse = await axios.get(
             `http://localhost:5000/notifications/${username}`
           ); // Update this with your actual notifications endpoint
@@ -66,7 +66,7 @@ const Topbar = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = JSON.parse(sessionStorage.user);
+        const userId = sessionStorage.username;
         const response = await axios.get(
           `http://localhost:5000/data/${userId}`
         );

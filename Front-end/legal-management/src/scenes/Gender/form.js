@@ -46,7 +46,7 @@ const GenderForm = (props) => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const creator = JSON.parse(sessionStorage.user);
+      const creator = sessionStorage.username;
       if (props.isEditing) {
         values.updated_by = creator;
         const Updated = await userManagementClient.put(

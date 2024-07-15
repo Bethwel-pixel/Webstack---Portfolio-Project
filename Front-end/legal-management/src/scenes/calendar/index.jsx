@@ -92,7 +92,7 @@ const Calendar = () => {
       createTask(newEvent);
     }
   };
-  const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
+  // const decodedToken = JSON.parse(localStorage.getItem("decodedToken"));
   const userIdFromSession = parseInt(decodedToken.Id);
   const createTask = async (newEvent) => {
     try {

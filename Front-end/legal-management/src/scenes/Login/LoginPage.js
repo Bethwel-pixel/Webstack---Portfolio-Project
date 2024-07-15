@@ -15,9 +15,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
 import meinInSuits from "../../Assets/Images/MenInSuits.jpg";
-import { loginCallApi } from "../../api/userservice";
+import { getAllUsers, loginCallApi } from "../../api/userservice";
 import swal from "sweetalert";
 import { jwtDecode } from "jwt-decode";
+import { userManagementClient } from "../../config";
 
 function saveTokenToStorage(decodedToken) {
   localStorage.setItem("decodedToken", JSON.stringify(decodedToken));
@@ -34,6 +35,7 @@ async function saveDataToLocalStorage(response) {
 function SignInSide({ onLogin }) {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
+  const [menuItemes, setMenuItems] = React.useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,8 +47,6 @@ function SignInSide({ onLogin }) {
       const password = formData.get("password");
 
       // Save username and password in session storage
-      sessionStorage.setItem("username", Username);
-
       const response = await loginCallApi(Username, password);
 
       if (response.status === 401) {
@@ -55,9 +55,9 @@ function SignInSide({ onLogin }) {
         swal("Error!", `${response.data.message}`, "error");
       } else if (response.status === 200) {
         const Username = formData.get("Username");
-        sessionStorage.setItem("user", JSON.stringify(Username));
+        sessionStorage.setItem("username", Username);
         if (onLogin) {
-          onLogin(Username); // Call the onLogin prop function if provided
+          onLogin(Username);
         }
         navigate("/super-admin-dashboard");
       } else {

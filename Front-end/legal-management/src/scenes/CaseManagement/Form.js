@@ -103,7 +103,7 @@ const CasesForm = (props) => {
     setLoading(true);
     setClientType(values.clientType);
     const timestamp = getCurrentTimestamp();
-    const user = JSON.parse(sessionStorage.user);
+    const user = sessionStorage.username;
     try {
       if (props.isEditing) {
         values.updated_at = timestamp;

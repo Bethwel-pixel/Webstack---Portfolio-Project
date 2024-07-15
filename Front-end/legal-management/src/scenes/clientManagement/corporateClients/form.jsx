@@ -71,7 +71,7 @@ const IndividualClientsForm = (props) => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const creator = JSON.parse(sessionStorage.user);
+      const creator = sessionStorage.username;
       const currentTimestamp = getCurrentTimestamp();
       if (props.isEditing) {
         values.updated_by = creator;
@@ -89,7 +89,11 @@ const IndividualClientsForm = (props) => {
         values.created_by = creator;
         const Created = await userManagementClient.post(`/${base_url}`, values);
         if (Created) {
-          swal("Success!", `${values.first_name} Created Successfully`, "success");
+          swal(
+            "Success!",
+            `${values.first_name} Created Successfully`,
+            "success"
+          );
         }
       }
       await fetchUsers(); // Fetch the updated data immediately after submission

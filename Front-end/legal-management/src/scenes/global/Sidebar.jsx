@@ -133,45 +133,27 @@ const Sidebar = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isButtonVisible, setButtonVisible] = useState(true);
-  const [userRole, setUserRole] = useState("admin");
-  const [menuItems, setMenuItems] = useState([]); // Example role, replace with actual logic
+  const [userRole, setUserRole] = useState("Admin");
+  const [menuItems, setMenuItems] = useState([]);
 
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const response = await getAllUsers(`${base_url}/1`);
-        const fetchedData = response.data;
+        const roleId = sessionStorage.username;
+        const response = await getAllUsers(`${base_url}/${roleId}`);
+        if (response && response.data && Array.isArray(response.data)) {
+          const modules = response.data.map((item) => ({
+            id: item.ModuleId,
+            title: item.title,
+            icon: item.icon,
+            children: item.children,
+            roles: item.roleName,
+          }));
 
-        const modules = fetchedData.reduce((acc, item) => {
-          const existingModule = acc.find(
-            (mod) => mod.ModuleId === item.ModuleId
-          );
-
-          if (existingModule) {
-            existingModule.children.push({
-              title: item.SubModuleTitle,
-              icon: item.SubModuleIcon,
-              to: item.SubModuleLink,
-            });
-          } else {
-            acc.push({
-              title: item.ModuleTitle,
-              icon: item.ModuleIcon,
-              children: [
-                {
-                  title: item.SubModuleTitle,
-                  icon: item.SubModuleIcon,
-                  to: item.SubModuleLink,
-                },
-              ],
-              roles: [item.RoleName.toLowerCase()],
-            });
-          }
-
-          return acc;
-        }, []);
-
-        setMenuItems(modules);
+          setMenuItems(modules);
+        } else {
+          console.error("Invalid data format:", response.data);
+        }
       } catch (error) {
         console.error("Error fetching menu items:", error);
       }
@@ -272,7 +254,7 @@ const Sidebar = () => {
           {/* MENU ITEMS */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {menuItems
-              .filter((menuitem) => menuitem.roles.includes(userRole))
+              // .filter((menuitem) => menuitem.roles.includes(userRole))
               .map((menuitem, i) => (
                 <Tooltip
                   title={isCollapsed ? menuitem.title : ""}
@@ -289,7 +271,7 @@ const Sidebar = () => {
                       setMenuSelected={setMenuSelected}
                       selectedMenu={selectedMenu}
                       submenuitems={menuitem.children}
-                      isCollapsed={isCollapsed} // Pass isCollapsed prop to Item component
+                      isCollapsed={isCollapsed}
                     />
                   </div>
                 </Tooltip>
