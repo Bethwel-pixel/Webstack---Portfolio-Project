@@ -24,6 +24,8 @@ import ForgotPassword from "./scenes/ForgotPassword/FormTwo";
 import Country from "./scenes/SetUpManagment/Country";
 import LandingPage from "./scenes/Landing_Page";
 import Role from "./scenes/SetUpManagment/OtherSetups/Role";
+import Roles from "./scenes/RoleManagement/Roles";
+import Modules from "./scenes/RoleManagement/Modules";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -67,6 +69,9 @@ function App() {
                 path="/super-admin-dashboard"
                 element={withLayout(Dashboard)()}
               />
+              <Route path="/Roles" element={withLayout(Roles)()} />
+              <Route path="/modules" element={withLayout(Modules)()} />
+              <Route path="/submodules" element={withLayout(Roles)()} />
             </>
           )}
 
