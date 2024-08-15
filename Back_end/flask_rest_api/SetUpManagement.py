@@ -1,5 +1,6 @@
 from UserManagment import db, SQLAlchemy, request
 from datetime import datetime
+from sqlalchemy import text
 class Gender(db.Model):
     __tablename__ = "Gender"
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +43,16 @@ def get_all_Roles():
 def create_Role():
     data = request.get_json()
     created_at = datetime.now()
-    role = Role(roleName=data['roleName'], created_at=created_at, created_by = data['created_by'])
+    role = Role(roleName=data['Role'], created_at=created_at, created_by = data['created_by'])
     db.session.add(role)
+    db.session.commit()
+    return {"message":"Role created Successfully"}, 201
+
+def Edit_Role(id):
+    data = request.get_json()
+    Role=data.get("Role")
+    updated_at = datetime.now()
+    role = text("update Roles set roleName=:Role, updated_at=:updated_at where id=:id")
+    db.session.execute(role,{'id':id,"Role":Role, 'updated_at':updated_at})
     db.session.commit()
     return {"message":"Role created Successfully"}, 201

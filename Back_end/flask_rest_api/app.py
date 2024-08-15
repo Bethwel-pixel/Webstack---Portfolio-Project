@@ -15,7 +15,8 @@ from signin import SignIn
 from flask_login import LoginManager, login_required, current_user
 from Signup import SignUp
 from query import text
-from SetUpManagement import get_all_Roles, create_Role
+from SetUpManagement import  create_Role, Edit_Role, get_all_Roles
+
 
 app = Flask(__name__)
 CORS(app)
@@ -207,6 +208,11 @@ def AllRoles():
 @app.route('/Roles', methods=['POST'])
 def createRole():
     return create_Role()
+
+@app.route('/Roles/<int:id>', methods=['PUT'])
+def EditRole(id):
+    return Edit_Role(id)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
