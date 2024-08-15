@@ -195,7 +195,7 @@ function SignUpSide() {
                     error={touched.last_name && Boolean(errors.last_name)}
                     helperText={touched.last_name && errors.last_name}
                   />
-                  <FormControl fullWidth margin="normal">
+                  {/* <FormControl fullWidth margin="normal">
                     <InputLabel id="gender-label">Gender</InputLabel>
                     <Field
                       as={Select}
@@ -216,7 +216,7 @@ function SignUpSide() {
                         {errors.gender}
                       </Typography>
                     )}
-                  </FormControl>
+                  </FormControl> */}
                   <Field
                     as={TextField}
                     margin="normal"

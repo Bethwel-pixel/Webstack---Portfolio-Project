@@ -20,7 +20,7 @@ from RoleManagement import get_all_Modules, create_all_Modules, edit_module, get
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://bethwel:kk@localhost/BETH'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Heman2838.@localhost/BETH'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 login_manager = LoginManager()
 login_manager.init_app(app)
