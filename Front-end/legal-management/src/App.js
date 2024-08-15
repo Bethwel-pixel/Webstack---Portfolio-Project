@@ -23,6 +23,7 @@ import Gender from "./scenes/Gender";
 import ForgotPassword from "./scenes/ForgotPassword/FormTwo";
 import Country from "./scenes/SetUpManagment/Country";
 import LandingPage from "./scenes/Landing_Page";
+import Role from "./scenes/SetUpManagment/OtherSetups/Role";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -61,6 +62,7 @@ function App() {
             <>
               <Route path="/users" element={withLayout(Users)()} />
               <Route path="/usersform" element={withLayout(UsersForm)()} />
+              <Route path="/OtherSetups" element={withLayout(Role)()} />
               <Route
                 path="/super-admin-dashboard"
                 element={withLayout(Dashboard)()}

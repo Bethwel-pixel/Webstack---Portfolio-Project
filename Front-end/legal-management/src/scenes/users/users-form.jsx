@@ -8,28 +8,29 @@ import { userFormFields } from "../../data/Fields/userFields";
 
 const UsersForm = (props) => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [swalSms, setSwalSms] = useState([]);
-
   const [genderOptions, setGenderOptions] = useState([]);
   const [countryOptions, setCountryOptions] = useState([]);
   const [countyOptions, setCountyOptions] = useState([]);
+  const [filteredCountyOptions, setFilteredCountyOptions] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [refreshTable, setRefreshTable] = useState(false);
   const [error, setError] = useState(null);
   const base_url = "data";
 
   useEffect(() => {
-    fetchCountries();
-    fetchGenderOptions();
-    fetchUsers();
-  }, [base_url, refreshTable]);
+    fetchData();
+  }, [base_url]);
 
-  const fetchUsers = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await getAllUsers(base_url);
-      setData(response.data); // Adjust based on your API response structure
+
+      const genderResponse = await getAllUsers("gender");
+      const countryResponse = await getAllUsers("countries");
+      const countyResponse = await getAllUsers("counties");
+
+      setGenderOptions(genderResponse.data);
+      setCountryOptions(countryResponse.data);
+      setCountyOptions(countyResponse.data);
     } catch (err) {
       setError(err);
     } finally {
@@ -37,56 +38,27 @@ const UsersForm = (props) => {
     }
   };
 
-  const fetchGenderOptions = async () => {
-    try {
-      const response = await getAllUsers("gender");
-      setGenderOptions(response.data);
-    } catch (err) {
-      setError(err);
-    }
-  };
-
-  const fetchCountries = async () => {
-    try {
-      const response = await getAllUsers("countries");
-      setCountryOptions(response.data);
-    } catch (err) {
-      setError(err);
-    }
-  };
-
-  const fetchCounties = async (countryId) => {
-    try {
-      const response = await getAllUsers(`counties/${26}`);
-      setCountyOptions(response.data);
-    } catch (err) {
-      setError(err);
-    }
-  };
-
-  const handleCountryChange = (event) => {
-    const countryId = event.target.value;
-    setSelectedCountry(countryId);
-    fetchCounties(countryId);
-  };
-
-  const OPtions = genderOptions.map((gender) => ({
-    parent_key: gender.id,
+  const genderOptionsFormatted = genderOptions.map((gender) => ({
     value: gender.id,
     label: gender.gender,
   }));
 
-  const CountryOPtions = countryOptions.map((country) => ({
-    parent_key: country.id,
+  const countryOptionsFormatted = countryOptions.map((country) => ({
     value: country.id,
     label: country.Country,
   }));
 
-  const CountyOptions = countyOptions.map((county) => ({
-    parent_key: county.id,
-    value: county.id,
-    label: county.County,
-  }));
+  const filterCountyOptions = (countryId) => {
+    const filteredOptions = countyOptions
+      .filter((item) => item.CountryID === countryId) // Make sure CountryID exists in county data
+      .map((item) => ({
+        value: item.id,
+        label: item.county,
+      }));
+
+    setFilteredCountyOptions(filteredOptions);
+  };
+  const SwalSms = 'hello';
 
   const initialValues = {
     Username: props.data ? props.data.Username : "",
@@ -101,28 +73,35 @@ const UsersForm = (props) => {
     county: props.data ? props.data.county : "",
   };
 
+  const onFieldChange = (field, value) => {
+    if (field.name === "country") {
+      setSelectedCountry(value);
+      filterCountyOptions(value);
+    }
+    return {};
+  };
+
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
       const creator = sessionStorage.username;
       if (props.isEditing) {
         values.updated_by = creator;
-        const Updated = await userManagementClient.put(
+        const updated = await userManagementClient.put(
           `/update/${props.data.id}`,
           values
         );
 
-        if (Updated) {
-          swal("Success!", `${Updated.data.message}`, "success");
+        if (updated) {
+          swal("Success!", `${updated.data.message}`, "success");
         }
       } else {
         values.created_by = creator;
-        const Created = await userManagementClient.post("/data", values);
-        if (Created) {
-          swal("Success!", `${Created.data.message}`, "success");
+        const created = await userManagementClient.post("/data", values);
+        if (created) {
+          swal("Success!", `${created.data.message}`, "success");
         }
       }
-      setRefreshTable((prev) => !prev); // Refresh the table after submission
     } catch (error) {
       swal("Error!", `${error.response.statusText}`, "error");
     } finally {
@@ -137,7 +116,7 @@ const UsersForm = (props) => {
       name: "gender",
       label: "Gender",
       type: "select",
-      options: OPtions,
+      options: genderOptionsFormatted,
       isRequired: true,
     },
     {
@@ -145,18 +124,17 @@ const UsersForm = (props) => {
       name: "country",
       label: "Country",
       type: "select",
-      options: CountryOPtions,
+      options: countryOptionsFormatted,
       isRequired: true,
-      onChange: handleCountryChange,
+      onChange: onFieldChange,
     },
     {
       id: "county",
       name: "county",
       label: "County",
       type: "select",
-      options: CountyOptions,
+      options: filteredCountyOptions,
       isRequired: true,
-      disabled: !selectedCountry,
     },
   ];
 
@@ -170,7 +148,8 @@ const UsersForm = (props) => {
       onClose={props.onClose}
       isEditing={props.isEditing}
       initialData={initialValues}
-      swalMessage={swalSms}
+      swalMessage={SwalSms}
+      onFieldChange={onFieldChange}
     />
   );
 };

@@ -15,6 +15,7 @@ from signin import SignIn
 from flask_login import LoginManager, login_required, current_user
 from Signup import SignUp
 from query import text
+from SetUpManagement import get_all_Roles, create_Role
 
 app = Flask(__name__)
 CORS(app)
@@ -180,6 +181,9 @@ def all_clientType():
 @app.route('/countries', methods=['GET'])
 def all_countries():
     return get_all_countries()
+@app.route('/counties', methods=['GET'])
+def allCounties():
+    return get_all_counties()
 
 @app.route('/SideBar/<username>', methods = ['GET'])
 def all_Modules_SideBar(username):
@@ -193,6 +197,16 @@ def forgot_password():
 @app.route('/change_password/<int:id>', methods=['POST'])
 def change_Password(id):
     return change_password(id)
+
+
+@app.route('/Roles', methods=['GET'])
+def AllRoles():
+    return get_all_Roles()
+
+
+@app.route('/Roles', methods=['POST'])
+def createRole():
+    return create_Role()
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import AnchorTemporaryDrawer from "../../components/Drawer";
 import swal from "sweetalert";
 import { userManagementClient } from "../../config";
-import UsersForm from "./users-form";
+import UsersForm from "./Form/form";
 import { getAllUsers, createUser, deleteUser } from "../../api/userservice"; // Import service functions
 import DynamicTable from "../../data/DynamicTable/dynamicTable";
 import { userColumns } from "../../data/columns/usersColumns";

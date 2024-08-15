@@ -282,10 +282,10 @@ def get_all_countries():
         "data": output,
     })
 
-def get_all_counties(id):
+def get_all_counties():
     # Query to get all notifications
-    sql = text('SELECT * from county where CountryId=:id;')
-    all_notifications = db.session.execute(sql,{"id":id}).fetchall()
+    sql = text('SELECT * from county;')
+    all_notifications = db.session.execute(sql).fetchall()
 
 
     # Prepare the output
@@ -293,7 +293,8 @@ def get_all_counties(id):
     for u in all_notifications:
         notification_data = {
             'id': u[0],  # Assuming the first column is 'id'
-            'Country': u[1]  # Assuming the second column is 'description'
+            'County': u[1],
+              'CountryId':u[2]  # Assuming the second column is 'description'
         }
         output.append(notification_data)
 

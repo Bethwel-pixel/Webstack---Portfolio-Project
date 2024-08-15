@@ -25,6 +25,6 @@ def SignIn():
 
     # if not user.password: #check_password_hash(user.password, password):
     #     return jsonify({"message": "Invalid password"}), 401
-    print(f'{user.password}:pass={user.Username} fn:{user.First_name}')
+    # print(f'{user.password}:pass={user.Username} fn:{user.First_name}')
 
     return jsonify({"message": "Login successful"}), 200
