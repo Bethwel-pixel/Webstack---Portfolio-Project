@@ -6,7 +6,7 @@ from clientManagement import Client
 from CasseManagement import Cases, CaseCategory, SubCategory
 from CompanyManagment import Company, IndustrySector
 from AccountManagement import Banks, BankAccounts, BankBranches
-from query import get_all_Users, get_all_Company_Region_View, get_all_cases, get_all_ClientManagementView, get_all_notifications, get_all_gender,get_all_IndividualClients, get_all_CorporateClients, get_all_category, get_all_casesubcategory, get_all_clientType, get_all_recentCases, get_all_counties, get_all_countries, get_all_Modules, get_User_Id
+from query import get_all_Users, get_all_Company_Region_View, get_all_cases, get_all_ClientManagementView, get_all_notifications, get_all_gender,get_all_IndividualClients, get_all_CorporateClients, get_all_category, get_all_casesubcategory, get_all_clientType, get_all_recentCases, get_all_counties, get_all_countries, get_all_SideBar, get_User_Id
 from delete import delete_user
 from companyRegionBranches import CompanyRegionBranchView
 from mutation import create_user, Create_Case, create_IndividualClient, create_CorporateClient, Create_Gender, change_password
@@ -16,7 +16,7 @@ from flask_login import LoginManager, login_required, current_user
 from Signup import SignUp
 from query import text
 from SetUpManagement import  create_Role, Edit_Role, get_all_Roles
-
+from RoleManagement import get_all_Modules, create_all_Modules, edit_module, get_all_submodules, create_all_submodules, edit_submodule
 
 app = Flask(__name__)
 CORS(app)
@@ -188,7 +188,7 @@ def allCounties():
 
 @app.route('/SideBar/<username>', methods = ['GET'])
 def all_Modules_SideBar(username):
-    return get_all_Modules(username)
+    return get_all_SideBar(username)
 
 # *** Forgot Password Logic ***
 @app.route('/forgot_password', methods=['POST'])
@@ -200,18 +200,34 @@ def change_Password(id):
     return change_password(id)
 
 
-@app.route('/Roles', methods=['GET'])
-def AllRoles():
-    return get_all_Roles()
+@app.route('/modules', methods=['GET'])
+def Allmodules():
+    return get_all_Modules()
 
 
-@app.route('/Roles', methods=['POST'])
+@app.route('/modules', methods=['POST'])
 def createRole():
-    return create_Role()
+    return create_all_Modules()
 
-@app.route('/Roles/<int:id>', methods=['PUT'])
+@app.route('/modules/<int:id>', methods=['PUT'])
 def EditRole(id):
-    return Edit_Role(id)
+    return edit_module(id)
+
+@app.route('/submodules', methods=['GET'])
+def Allsubmodules():
+    return get_all_submodules()
+
+
+@app.route('/submodules', methods=['POST'])
+def createSubModule():
+    return create_all_submodules()
+
+@app.route('/submodules/<int:id>', methods=['PUT'])
+def EditSubModule(id):
+    return edit_submodule(id)
+
+
+
 
 if __name__ == '__main__':
     with app.app_context():

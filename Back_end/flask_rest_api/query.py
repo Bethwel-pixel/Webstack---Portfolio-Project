@@ -303,7 +303,7 @@ def get_all_counties():
     })
 
 
-def get_all_Modules(username):
+def get_all_SideBar(username):
     # Query to get all modules and submodules
     sql = text('SELECT * FROM beth.rolesmodulessubmodules WHERE roleId=(SELECT RoleId FROM beth.users WHERE Username=:username);')
     all_modules = db.session.execute(sql, {"username": username}).fetchall()
