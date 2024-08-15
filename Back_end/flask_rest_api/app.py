@@ -199,6 +199,18 @@ def forgot_password():
 def change_Password(id):
     return change_password(id)
 
+@app.route('/Roles', methods=['GET'])
+def AllRoles():
+    return get_all_Roles()
+
+
+@app.route('/Roles', methods=['POST'])
+def createRole():
+    return create_Role()
+
+@app.route('/Roles/<int:id>', methods=['PUT'])
+def EditSRole(id):
+    return Edit_Role(id)
 
 @app.route('/modules', methods=['GET'])
 def Allmodules():
@@ -206,7 +218,7 @@ def Allmodules():
 
 
 @app.route('/modules', methods=['POST'])
-def createRole():
+def createModule():
     return create_all_Modules()
 
 @app.route('/modules/<int:id>', methods=['PUT'])
